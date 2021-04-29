@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hagglex/Utitls/form.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -13,6 +14,9 @@ class _LoginState extends State<Login> {
   String email;
   String password;
   bool isLoading = false;
+
+  // Create storage
+  final storage = new FlutterSecureStorage();
 
   String login() {
     return """
@@ -143,6 +147,15 @@ class _LoginState extends State<Login> {
                                 isLoading = false;
                               });
                               print('exception ${result.exception.toString()}');
+                            }
+                            if (result.data != null) {
+                              await storage.write(
+                                  key: 'token',
+                                  value: result.data['login']['token']);
+                              // print(result.data);
+                              // print(result.data['login']['token']);
+                              // print(result.data['user']);
+                              // print(result.data['token']);
                             }
                           }
                         },
